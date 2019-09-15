@@ -42,6 +42,14 @@
 
   </script>
 
+  <!-- TEMPLATE CONSOLE  NAVIGATE PAGES -->
+
+  <script id="template_nav_page" type="text/x-handlebars-template">
+    <span id="prev"><==</span>
+    <span id="counter_page">{{page}}</span>
+    <span id="next">==></span>
+  </script>
+
     <!-- CSS: MY STYLE -->
     <link rel="stylesheet" href="style.css">
     <!-- JS: MY SCRIPT -->
@@ -53,7 +61,8 @@
   <body>
 
     <div class="container">
-      <div id="next"><h2>==></h2></div>
+      <input id="query_search" type="text">
+      <div id = "consol_page"></div>
       <input id="genere_select" type="number">
       <input id="search" type="button" value="Cerca per genere">
       <div class="wrapper">

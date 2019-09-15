@@ -1,6 +1,15 @@
-function createArray20Results(data, genere_val){
+function printConsolenavPages(data){
 
-    
+    var source = $('#template_nav_page').html();
+    var template = Handlebars.compile(source);
+
+    var context = {
+        page: data
+    };
+
+    var html = template(context);
+
+    $('#consol_page').html(html);
 }
 
 function controlimgnull(imgurl){
@@ -12,9 +21,8 @@ function controlimgnull(imgurl){
       src = "https://image.tmdb.org/t/p/w342" + imgurl;
     }
     return src
-  }
+}
   
-
 function prinResult(data){
 
     var source = $('#templateinfofilm').html();
@@ -34,62 +42,6 @@ function prinResult(data){
     $('.wrapper').append(html);
 }
 
-function prinResultGenres(data){
-
-    var source = $('#templateinfofilm').html();
-    var template = Handlebars.compile(source);
-
-    var context = {
-        movie: data.id,
-        image: controlimgnull(data.poster_path),
-        titolo: data.title,
-        titoloorig: data.original_title,
-        lingua: data.original_language,
-        overview: data.overview
-    };
-
-    var html = template(context);
-    
-    $('.wrapper').append(html);
-}
-
-function apiforNextpage (page, url, apiKey, query){
-
-    $.ajax({
-
-        url: url,
-        method: "GET",
-        data: { query: query,
-            language: "it-IT",
-            api_key: apiKey,
-            page: page }, 
-
-        success: function(data){
-
-            var results = data.results;
-
-            console.log(data.results, data.page);
-            
-            $('.copertina').remove();
-            /* var genere_val = 53; */
-            for (let i = 0; i < results.length; i++) {
-                var el =results[i];
-                
-                prinResult(el);
-            }
-            
-            
-        },
-        error: function(){
-            console.log("errore chiamata per tutte le altre pagine");
-            
-        }
-
-    });
-        
-    
-}
-
 function apiForGenereFilter(page, url, apiKey, query, genere_val){
 
     $.ajax({
@@ -103,34 +55,9 @@ function apiForGenereFilter(page, url, apiKey, query, genere_val){
 
         success: function(data){
 
-            var result_on_page = $('.copertina');
-            var myArr = [];
             var results = data.results;
-            var print_for_genres = getGenreArray(results, genere_val);
+            getGenreArray(results, genere_val);
 
-            console.log("Api for genre filter",results,"page", data.page, "total_page", data.total_pages);
-    
-            console.log("genre arr print",print_for_genres, print_for_genres.length);
-            
-            for (let i = 0; i < print_for_genres.length; i++) {
-                const element = print_for_genres[i];
-
-                /* prinResult(element); */
-
-                myArr.push(element);
-                console.log("result on page",result_on_page ,(result_on_page.length < 20));
-                
-                if (result_on_page.length < 20) {
-                    prinResult(element);
-                }
-                
-                
-                
-            }
-            
-             console.log('genre arr print arr', myArr);
-                
-            
             
         },
         error: function(error){
@@ -145,8 +72,6 @@ function apiForGenereFilter(page, url, apiKey, query, genere_val){
 
 function getGenreArray(data, genere_val) {
     
-    var arr_el = []; 
-
 
     for (let j = 0; j < data.length; j++) {
         const el = data[j];
@@ -159,21 +84,22 @@ function getGenreArray(data, genere_val) {
         
         if (arr_genre.includes(Number(genere_val))) {
             
-            arr_el.push(el);
+            prinResult(el);
                 
         }
         
     }
-    
-    return arr_el 
+   
               
 }
 
 
 function getData(pag_n,url,apiKey){
 
+    var query = $('#query_search').val();
 
-    var query = "casa";
+    var page_forapi = 1;
+    
 
     $.ajax({
         url: url,
@@ -186,11 +112,11 @@ function getData(pag_n,url,apiKey){
         success: function(data){
             console.log(data);
             var results = data.results;
-            var genere_val;
-            var page = 1;
-            var page_forapi = 1;
             var total_pages = data.total_pages;
             
+            $('.copertina').remove();
+            printConsolenavPages(data.page);
+
 
             /* var genere_val = 53; */
             for (let i = 0; i < results.length; i++) {
@@ -198,28 +124,19 @@ function getData(pag_n,url,apiKey){
                 prinResult(el);
             }
 
+            $(document).on("click", "#search", function(){
 
-           $(document).on("click", "#next", function(){
-
-            page++;
-            console.log("click");
-            
-            
-            apiforNextpage (page, url, apiKey, query)
-
-           });
-
-           $(document).on("click", "#search", function(){
-
+                var query = $('#query_search').val();
                 genere_val = $('#genere_select').val();
                 $('.copertina').remove();
                 for (let i = 0; i < total_pages; i++) {
                     page_forapi++
                     apiForGenereFilter(page_forapi, url, apiKey, query,genere_val)
-                    page_forapi = 0;
+                    
                 }
-
+                page_forapi = 0;
             });
+           
                     
         },
         error: function(err){
@@ -233,7 +150,34 @@ function init() {
     var url = "https://api.themoviedb.org/3/search/movie?&language=it-IT";
     var apiKey = "ad43da61407cf7dd84ab0c94302e0c68";
 
-    getData(1,url, apiKey)
+    var page_counter = 1;
+   
+
+    $(document).on("keypress", "#query_search", function(event){
+
+        if (event.which === 13) {
+
+            getData (page_counter, url, apiKey);
+        }
+    });
+
+
+    $(document).on("click", "#next", function(){
+
+        page_counter++;
+        
+        getData (page_counter, url, apiKey);
+
+    });
+
+    $(document).on("click", "#prev", function(){
+
+        page_counter--;
+        
+        getData (page_counter, url, apiKey);
+
+    });
+
 }
 
 $(document).ready(init);

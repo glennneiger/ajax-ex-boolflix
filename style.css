@@ -133,3 +133,8 @@ header h1{
 .hide{
   display: none;
 }
+
+#prev,
+#next{
+  cursor: pointer;
+}
