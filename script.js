@@ -1,3 +1,8 @@
+function createArray20Results(data, genere_val){
+
+    
+}
+
 function controlimgnull(imgurl){
     var src = "";
   
@@ -29,6 +34,24 @@ function prinResult(data){
     $('.wrapper').append(html);
 }
 
+function prinResultGenres(data){
+
+    var source = $('#templateinfofilm').html();
+    var template = Handlebars.compile(source);
+
+    var context = {
+        movie: data.id,
+        image: controlimgnull(data.poster_path),
+        titolo: data.title,
+        titoloorig: data.original_title,
+        lingua: data.original_language,
+        overview: data.overview
+    };
+
+    var html = template(context);
+    
+    $('.wrapper').append(html);
+}
 
 function apiforNextpage (page, url, apiKey, query){
 
@@ -80,15 +103,37 @@ function apiForGenereFilter(page, url, apiKey, query, genere_val){
 
         success: function(data){
 
+            var result_on_page = $('.copertina');
+            var myArr = [];
             var results = data.results;
+            var print_for_genres = getGenreArray(results, genere_val);
 
-            console.log("Api for genre filter",data.results,"page", data.page, "total_page", data.total_pages);
+            console.log("Api for genre filter",results,"page", data.page, "total_page", data.total_pages);
+    
+            console.log("genre arr print",print_for_genres, print_for_genres.length);
+            
+            for (let i = 0; i < print_for_genres.length; i++) {
+                const element = print_for_genres[i];
 
-            getGenreArray(results, genere_val);
+                /* prinResult(element); */
+
+                myArr.push(element);
+                console.log("result on page",result_on_page ,(result_on_page.length < 20));
+                
+                if (result_on_page.length < 20) {
+                    prinResult(element);
+                }
+                
+                
+                
+            }
+            
+             console.log('genre arr print arr', myArr);
+                
             
             
         },
-        error: function(){
+        error: function(error){
             console.log("errore chiamata per tutte le altre pagine");
             
         }
@@ -100,8 +145,8 @@ function apiForGenereFilter(page, url, apiKey, query, genere_val){
 
 function getGenreArray(data, genere_val) {
     
+    var arr_el = []; 
 
-    console.log("data getgenrearra", data);
 
     for (let j = 0; j < data.length; j++) {
         const el = data[j];
@@ -114,15 +159,13 @@ function getGenreArray(data, genere_val) {
         
         if (arr_genre.includes(Number(genere_val))) {
             
-            prinResult(el);
-
+            arr_el.push(el);
+                
         }
         
     }
     
-    
-    
-    
+    return arr_el 
               
 }
 
@@ -143,7 +186,7 @@ function getData(pag_n,url,apiKey){
         success: function(data){
             console.log(data);
             var results = data.results;
-            var genere_val = $('#genere_select').val();
+            var genere_val;
             var page = 1;
             var page_forapi = 1;
             var total_pages = data.total_pages;
@@ -168,11 +211,12 @@ function getData(pag_n,url,apiKey){
 
            $(document).on("click", "#search", function(){
 
+                genere_val = $('#genere_select').val();
                 $('.copertina').remove();
                 for (let i = 0; i < total_pages; i++) {
                     page_forapi++
                     apiForGenereFilter(page_forapi, url, apiKey, query,genere_val)
-                    
+                    page_forapi = 0;
                 }
 
             });
