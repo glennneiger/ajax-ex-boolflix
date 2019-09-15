@@ -35,7 +35,8 @@ function prinResult(data, append_to){
         titolo: data.title,
         titoloorig: data.original_title,
         lingua: data.original_language,
-        overview: data.overview
+        overview: data.overview,
+        genere: data.genre_ids
     };
 
     var html = template(context);
@@ -73,7 +74,6 @@ function apiForGenereFilter(page, url, apiKey, query, genere_val){
 
 function getGenreArray(data, genere_val) {
      
-    var item_on_page = $('.copertina');
     
     for (let j = 0; j < data.length; j++) {
 
@@ -86,22 +86,9 @@ function getGenreArray(data, genere_val) {
         
         
         if (arr_genre.includes(Number(genere_val))) {
-            
-            if (item_on_page.length < 20) {
-                counter_result++;
-                console.log("counter result", counter_result);
-                
-                prinResult(el,$('.wrapper'));
-            }else if(item_on_page.length < 40){
-                
-                $(document).on('click', '#next', function(){
-                    
-                    
-                    prinResult(el,$('.wrapper'))
-                });
-            }
-            
-                        
+         
+            prinResult(el,$('.wrapper'));
+                       
         } 
     }          
     
