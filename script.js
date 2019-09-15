@@ -77,7 +77,6 @@ function getGenreArray(data, genere_val) {
     
     for (let j = 0; j < data.length; j++) {
 
-        var counter_result = 0;
         const el = data[j];
         var arr_genre = el.genre_ids;
        
@@ -92,7 +91,6 @@ function getGenreArray(data, genere_val) {
         } 
     }          
     
-    $('#el_counter').html(el_counter);
               
 }
 
@@ -134,8 +132,7 @@ function getData(pag_n,url,apiKey){
                 $(document).off("click", "#prev");
                 $(document).off("click", "#next");
                  console.log("total_pages", total_pages);
-                 
-                $('.copertina').remove();
+                 $('.copertina').remove();
                 for (let i = 0; i < total_pages; i++) {
                     page_forapi++
                     apiForGenereFilter(page_forapi, url, apiKey, query,genere_val)

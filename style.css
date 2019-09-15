@@ -74,8 +74,11 @@ header h1{
 }
 
 .wrapper{
-  width: 75vw;
+  width: 80vw;
+  height: 90vh;
   float: right;
+
+  overflow: auto;
 }
 
 .wrapper::after{
