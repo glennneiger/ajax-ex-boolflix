@@ -2,6 +2,20 @@
   margin: 0;
   padding: 0;
   box-sizing: border-box;
+
+  font-family: 'lato';
+}
+
+a{
+  text-decoration-line: none;
+  color: #58402c;
+}
+
+a:hover{
+
+  cursor: pointer;
+
+  border-bottom: 4px solid lightsteelblue;
 }
 
 ul{
@@ -58,13 +72,45 @@ header h1{
   text-transform: capitalize;
 }
 
-#startoclone{
+.aside_rgt{
 
+  margin: 20px 10px;
+}
+
+#genere_movies{
+  width: 20vw;
+
+  display: flex;
+  flex-direction: column;
+
+  background-color: lightgrey;
+
+  border-radius: 5px;
+
+  padding: 10px 20px;
+  
+
+}
+
+#genere_movies a{
+
+  /* max-width: 45%; */
+
+  margin-bottom: 5px;
+
+  border-radius: 20%;
+
+}
+
+#consol_page{
+  
 }
 
 .container{
   width: 100%;
   height: 100%;
+
+  display: flex;
 }
 
 .container::after{
@@ -79,12 +125,18 @@ header h1{
   float: right;
 
   overflow: auto;
+  margin-top: 20px;
 }
 
 .wrapper::after{
   display: table;
   content: "";
   clear: both;
+}
+
+h2.page{
+  color: #58402c;
+  margin-left: 20px;
 }
 
 .copertina{

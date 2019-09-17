@@ -18,37 +18,38 @@
     <!-- TEMPLATE: MESSAGE MENU -->
     <script id="templateinfofilm" type="text/x-handlebars-template">
 
-      <div class="copertina">
+      <div class="movie" id="{{id}}">
 
-        <img src="{{image}}">
-        <ul id="{{movie}}">
-          <li>{{tv_movie}}</li>
-          <li genereref={{genereref}}>Genere:{{genere}} </li>
-          <li>{{titolo}}</li>
-          <li>{{titoloorig}}</li>
-          <li>{{lingua}}<span class="flag-icon flag-icon-{{lingua}}"></span>
-          </li>
-          <li class="cast">Cast: {{cast}}</li>
-          <li>{{voto}}
-
-              <span class="appendstar" voteref={{voteref}}>{{iconstar}}</span>
-
-          </li>
-
-          <li>Descrizione: {{overview}}</li>
-        </ul>
-
-      </div>
+          <div class= "img-wrapper"><img src="{{{img}}}" alt="sss"></div>
+  
+          <div class= "info-wrapper">
+            <ul>
+              <li><h1 class="movie-title"> {{title}}</h1> </li>
+              <li><span class="bold">Tipo:</span> <span> {{type}}</span> </li>
+              <li><span class="bold">Genere:</span><span class="movie-genre"></span></li>
+              <li><span class="bold">Titolo originale:</span><span class="original_title"> {{originalTitle}}</span></li>
+              <li><span class="bold">Lingua:</span><span class="movie-lan"> {{{movieLan}}} <span class="flag-icon flag-icon-{{nazione}}"></span></li>
+              <li><span class="bold">Voto:</span><span class="movie-rate"> {{{movieRate}}}</span></li>
+              <li><span class="bold">Overview:</span><span class="movie-rate"> {{{overview}}}</span></li>
+              <li><span class="bold">Cast:</span><span class="movie-cast"> {{cast}}</span></li>
+            </ul>
+          </div>
+        </div>
 
   </script>
 
   <!-- TEMPLATE CONSOLE  NAVIGATE PAGES -->
-
   <script id="template_nav_page" type="text/x-handlebars-template">
-    <span id="prev"><==</span>
-    <span id="counter_page">{{page}}</span>
-    <span id="next">==></span>
-    <span id="el_counter"></span>
+    <h2 class="page">
+      <span id="prevpage"><i class="fas fa-step-backward"></i></span> Page <span>{{paginacorrente}}</span> di <span>{{totalepagine}}</span>
+      <span id="nextpage"><i class="fas fa-step-forward"></i></span>
+    </h2>
+  </script>
+
+  <!-- TEMPLATE LISTA GENERI -->
+  <script id="template_generi_list" type="text/x-handlebars-template">
+    <h1>{{bla}}</h1>
+    <a id="{{id_genere}}" class="genere" href="#">{{nome}}</a>
   </script>
 
     <!-- CSS: MY STYLE -->
@@ -61,13 +62,22 @@
   </head>
   <body>
 
+    <header>
+      <div class="container-header">
+        <h1>BOOLFLIX</h1>
+        <input id="query_search" type="text">
+      </div>
+    </header>
+    
     <div class="container">
-      <input id="query_search" type="text">
-      <div id = "consol_page"></div>
-      <input id="genere_select" type="number">
-      <input id="search" type="button" value="Cerca per genere">
-      <div class="wrapper wrapper_1">
 
+      <aside class="aside_rgt">
+        <div id="genere_movies"></div>
+        
+      </aside>
+      
+      <div class="wrapper wrapper_1">
+          <div id = "consol_page"></div>
       </div>
 
     </div>
