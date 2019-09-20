@@ -314,7 +314,7 @@ function navPagePrev(page_counter, url, apiKey, query){
 function navPageNext(page_counter, total_pages, url, apiKey, query){
    
     /* CONTROLLO PER IL BLOCCO FUNZIONE IN BASE AL 
-    NUMERO DELLE PAGINE RESTITUITE DAL JSON */
+    NUMERO DELLE PAGINE RESTITUITE DAL JSON s*/
     if (page_counter < total_pages){
         
         console.log("ciao", total_pages, page_counter);
