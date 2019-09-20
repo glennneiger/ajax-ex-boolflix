@@ -139,24 +139,51 @@ h2.page{
   margin-left: 20px;
 }
 
-.copertina{
+.card{
+  font-weight: lighter;
   float: left;
-  margin: 20px;
   width: 342px;
-  height: 504px;
-  position: relative;
+  height: 510px;
+  margin: 20px;
   border: 4px solid white;
+  position: relative;
 }
 
-.copertina img{
+.card img{
   width: 100%;
   height: 100%;
 }
 
-.copertina:hover ul{
+.card:hover ul{
   display: block;
 }
 
+.img-wrapper{
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  z-index: -1;
+
+}
+
+img.poster{
+  width: 100%;
+  height: 100%;
+}
+
+.card:hover .info-wrapper{
+  display: block;
+}
+
+.info-wrapper{
+  display: none;
+  width: 100%;
+  height: 100%
+  position: absolute;
+  background-color: rgba(0, 0, 0, 0.7);
+  color: white;
+  overflow: auto;
+}
 
 .wrapper ul{
   display: none;
@@ -171,10 +198,20 @@ h2.page{
   overflow: auto;
 }
 
+.info-wrapper ul{
+  padding: 50px 20px;
+}
+
+.info-wrapper ul li{
+  margin: 10px 0;
+}
+
+
 
 .wrapper ul li{
   margin: 10px 0;
 }
+
 
 /* HELPER CLASS */
 .cl-yw{

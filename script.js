@@ -14,7 +14,7 @@ function printConsolenavPages(data){
     $('#consol_page').html(html);
 }
 
-function prinResult(data, append_to, apikey){
+function prinResult(data, append_to){
 
     
     var source = $('#templateinfofilm').html();
@@ -33,7 +33,7 @@ function prinResult(data, append_to, apikey){
         titoloorig: data.original_title,
         lingua: data.original_language,
         overview: data.overview,
-        genere: data.genre_ids,
+        
         voto: "voto",
         voteref: "id-" + data.id
     };
@@ -56,6 +56,7 @@ function printGeneriLis(data){
    newDiv.className = 'genere_class'; */
 
    /* VERSIONE HANDLEBARS */
+   /* STAMPO IL TITOLO DELLA LISTA GENERATA DINAMICAMENTE */
    var source = $('#template_generi_list').html();
    var template = Handlebars.compile(source);
    var context_1 = {
@@ -143,7 +144,8 @@ function printGenres(id, type){
         }
       },
       error: function(errors){
-        alert("errore chiamata genereApi", errors)
+        console.log("errore chiamata genereApi", errors);
+        
       }
     });
   }
@@ -184,14 +186,12 @@ function getGenreArray(data, genere_val) {
 
         const el = data[j];
         var arr_genre = el.genre_ids;
+        console.log("GETARRGENERE", genere_val, arr_genre, el);
        
-        console.log("data genere", arr_genre,Number(genere_val));
-        console.log("data genere includes", arr_genre.includes(Number(genere_val)));
-        
-        
-        if (arr_genre.includes(Number(genere_val)) && $('.copertina').length < 70) {
-         
+        if (arr_genre.includes(Number(genere_val)) && $('.card').length < 50) {
+            console.log("GETARRGENERE");
             prinResult(el,$('.wrapper'));
+            
                        
         } 
     }          
@@ -199,14 +199,7 @@ function getGenreArray(data, genere_val) {
               
 }
 
-
-function getData(pag_n,url,apiKey){
-
-    var query = $('#query_search').val();
-
-    
-    
-    
+function getDataPageNextPrev(query, pag_n, url, apiKey){
 
     $.ajax({
         url: url,
@@ -219,43 +212,134 @@ function getData(pag_n,url,apiKey){
         success: function(data){
             console.log(data);
             var results = data.results;
+
                         
-            $('.copertina').remove();
+            $('.card').remove();
+            /* STAMPA CONSOL NAVIGAZIONE PAGINE */
             printConsolenavPages(data);
 
-
-            /* var genere_val = 53; */
+            /* CICLO E STAMPO ARRAI DEI RISULTATI OGGETTI */
             for (let i = 0; i < results.length; i++) {
                 var el =results[i];
+                
                 prinResult(el, $('.wrapper'));
             }
-
-            $(document).on('click','.genere',function(){
-
-                var query = $('#query_search').val();
-                var genere_val = $(this).attr('id');
-
-                var total_pages = data.total_pages;
-                var page_forapi = 1;
-
-                 console.log("total_pages", total_pages);
-
-                 $('.copertina').remove();
-                for (let i = 0; i < total_pages; i++) {
-                    page_forapi++
-                    apiForGenereFilter(page_forapi, url, apiKey, query,genere_val)
-                    
-                }
-                page_forapi = 0;
-
-            });
-                          
+                      
         },
         error: function(err){
             console.log("errore chiamata api");
             
         }
     });
+
+
+}
+
+function getData(pag_n,url,apiKey){
+
+    var query = $('#query_search').val();
+
+    $.ajax({
+        url: url,
+        method: "GET",
+        data: { query: query,
+                language: "it-IT",
+                api_key: apiKey,
+                page: pag_n },
+
+        success: function(data){
+            console.log(data);
+            var results = data.results;
+            var total_pages = data.total_pages;
+            var page = data.page;
+            
+                        
+            $('.card').remove();
+            /* STAMPA CONSOL NAVIGAZIONE PAGINE */
+            printConsolenavPages(data);
+
+            /* CICLO E STAMPO ARRAI DEI RISULTATI OGGETTI */
+            for (let i = 0; i < results.length; i++) {
+                var el =results[i];
+                prinResult(el, $('.wrapper'));
+            }
+
+            /* EVENTO CLICK PER ANDARE ALLA PAGINA 
+            SUCCESSIVA DEI RISULTATI */
+            $(document).on("click", "#nextpage", function(){
+                
+                page++;
+                navPageNext(page, total_pages, url, apiKey, query);
+            });
+            
+            /* EVENTO CLICK PER ANDARE ALLA PAGINA 
+            PRECEDENTE DEI RISULTATI */
+            $(document).on("click", "#prevpage", function(){
+
+                page--;
+                navPagePrev(page, url, apiKey, query);
+
+            });
+
+            /* FUNZIONE AZIONE CLICK SUL GNERE PER 
+            FILTRO GENERE */
+            $(document).on('click','.genere',function(){
+
+                filtereGenresBtn($(this), query, total_pages, url, apiKey);
+            });
+                         
+        },
+        error: function(err){
+            console.log("errore chiamata api");
+            
+        }
+    });
+}
+
+/* FUNZIONE EVENTO CLICK PER SCORRERE LA PAGINA DEI RISULTATI */
+function navPagePrev(page_counter, url, apiKey, query){
+        
+    /* CONTROLLO PER IL BLOCCO FUNZIONE IN BASE AL 
+    NUMERO DELLE PAGINE RESTITUITE DAL JSON */
+    if (page_counter > 0){
+
+        getDataPageNextPrev(query, page_counter, url, apiKey);
+        
+        console.log(page_counter);
+    }
+
+}
+
+/* FUNZIONE EVENTO CLICK PER SCORRERE LA PAGINA DEI RISULTATI */
+function navPageNext(page_counter, total_pages, url, apiKey, query){
+   
+    /* CONTROLLO PER IL BLOCCO FUNZIONE IN BASE AL 
+    NUMERO DELLE PAGINE RESTITUITE DAL JSON */
+    if (page_counter < total_pages){
+        
+        console.log("ciao", total_pages, page_counter);
+        getDataPageNextPrev(query, page_counter, url, apiKey)
+    
+    }
+ 
+}
+
+/* FUNZIONE EVENTO CLICK FILTRO RISULTATI PER GENERE */
+function filtereGenresBtn(itemClicked, query, total_pages, url, apiKey){
+
+        var genere_val = itemClicked.attr('id');
+        var page_forapi = 1;
+
+         console.log("total_pages", total_pages);
+
+         $('.card').remove();
+        for (let i = 0; i < total_pages; i++) {
+            page_forapi++;
+            apiForGenereFilter(page_forapi, url, apiKey, query,genere_val);
+            
+        }
+        page_forapi = 0;
+
 }
 
 function getGenresNameApi(url, apikey){
@@ -289,12 +373,15 @@ function init() {
 
     var page_counter = 0;
     
+    /* API PER RICHIESTA LISTA GENERI */
     getGenresNameApi(urlgenresmovie, apiKey)
-
+    /* EVENTO KEYPRESS SU TASTO INVIO PER AVVIARE LA RICERCA */
     $(document).on("keypress", "#query_search", function(event){
 
         if (event.which === 13) {
 
+            /* CONTATORE PER INVIARE IL PARAMETRO PAGINA ALLA
+            RICHIESTA AJAX CONTENUTA NELLA FUNZIONE */
             page_counter = 1;
 
             getData (page_counter, url, apiKey);
@@ -302,25 +389,10 @@ function init() {
     });
 
     
-    $(document).on("click", "#next", function(){
-
-        page_counter++;
-        
-        getData (page_counter, url, apiKey);
-
-    });
-
-    
-    $(document).on("click", "#prev", function(){
-
-        page_counter--;
-        
-        getData (page_counter, url, apiKey);
-
-    });
 
     
     
 }
 
 $(document).ready(init);
+
